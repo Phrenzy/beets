@@ -6,14 +6,8 @@ threaded: yes
 original_date: yes                      # Use orginal release date.
 per_disc_numbering: no
 
-convert:
-    auto: no
-    ffmpeg: /usr/bin/ffmpeg
-    opts: -ab 320k -ac 2 -ar 48000
-    max_bitrate: 320
-    threads: 1
 
-###  File and folder structure
+###  File and folder structure  ####################################################################
 asciify_path: yes            # Convert all non-ASCII characters in paths to ASCII equivalents.
 max_filename_length: 255     # 0 = unlimited.
 
@@ -22,7 +16,9 @@ paths:
     singleton: Non-Album/$artist - $title
     comp: Compilations/$album%aunique{}/$track - $title
     albumtype_soundtrack: Soundtracks/$album/$track $title 
-        
+
+
+
 import:
     write: yes
     copy: no
@@ -37,11 +33,7 @@ lastgenre:
     auto: yes
     source: album
 
-embedart:
-    auto: yes
 
-fetchart:
-    auto: yes
     
 replaygain:
     auto: no
@@ -61,7 +53,80 @@ replace:
     '\.$': _
     '\s+$': ''
 
+###  Album Covers  ############################################################################
+
+art_filename: cover          
+                             
+copyartifacts:
+    extensions: .jpg .png
+    print_ignored: yes
+
+embedart:
+    auto: yes
+
+fetchart:
+    auto: yes
+
+
+###  Export  ##################################################################################
+
+convert:
+    auto: no
+    ffmpeg: /usr/bin/ffmpeg
+    opts: -ab 320k -ac 2 -ar 48000
+    max_bitrate: 320
+    threads: 1
+
+#id3v23: inherit           # Can be used to override the global id3v23 option. Default: inherit.
+
+never_convert_lossy_files: yes
+                        # Cross-conversions between lossy codecs—such as mp3, ogg vorbis, etc.
+                        # Makes little sense as they will decrease quality even further.
+                        # If set to yes, lossy files are always copied.
+
+
+
+permissions: # octal modes   # Maybe nescessary for smb shares like ROCK or NAS drives.
+  file: 777  # not working
+  dir: 777   # not working
+
+
+
 web:
     host: 0.0.0.0
     port: 8337
 
+
+ui:
+    color: yes
+    colors:
+        text_success: green
+        text_warning: blue
+        text_error: red
+        text_highlight: blue
+        text_highlight_minor: lightgray
+        action_default: darkblue
+        action: purple
+
+hook:
+  hooks:
+    #############################################
+    - event: album_imported
+      command: echo "\"{album}\""
+    - event: import
+      command: echo "imported from {paths}"
+    #############################################
+    - event: art_set
+      command: echo "Coverart saved"
+    - event: import_begin
+      command: echo "Roon import started..."
+    - event: import_task_apply
+      command: echo "Metadata applied"
+    - event: item_copied
+      command: echo "\"{item}\" copied from \"{source}\" to \"{destination}\""
+    - event: item_moved
+      command: echo "Moved \"{item}\""
+    - event: write
+      command: echo "Writing to {path}"
+    - event: cli_exit
+      command: echo "All tasks finished!"

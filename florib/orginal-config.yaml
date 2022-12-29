@@ -6,7 +6,7 @@ include:                     # A list of extra configuration files to include.
   - secrets.yaml             # Secret strings (REDUCTED) like usernames and passwords. Add this file to git.ignore.
   - plugins.yaml             # Activate/deactivate plugins here.
 
-
+original_date: yes           # Use the original date for the release.
 
 per_disc_numbering: yes      # The track numbers are incremented throughout a multi disk release.
 
@@ -29,7 +29,7 @@ parentwork:                  # This plugin adds five tags:
 
 # Paths ###########################################################################################
 
-
+asciify_path: yes            # Convert all non-ASCII characters in paths to ASCII equivalents.
 
 clutter:                     # When beets imports all the files in a directory, it tries to remove the directory if it’s empty.
                              # A directory is considered empty if it only contains files whose names match the glob patterns in clutter,
@@ -46,7 +46,7 @@ bucket:
 
 paths:                       # Directory and naming scheme.
                              # The aunique{} function ensures that identically-named albums are placed in different directories.
-
+  default: %bucket{$artist,alpha}/$albumartist/$album%aunique{}/$track $title
   singleton: %bucket{$artist,alpha}/$artist/Non-Album/$title
   albumtype:soundtrack: Soundtracks/$album%aunique{}/$track $title
   comp: Compilations/$album%aunique{}/$track $title
@@ -57,7 +57,7 @@ paths:                       # Directory and naming scheme.
   ext:pdf: $albumpath/scans/booklet
   ###############################################
 
-
+max_filename_length: 255     # 0 = unlimited.
 
 ##################################################################################################
 
@@ -315,7 +315,12 @@ lyrics:
 # stored in a folder called artwork or scans next to the files are displayed.
 # This includes all images that include cover, front or folder.
 
+art_filename: cover          # When importing album art, the name of the file (without extension) where the cover art image should be placed.
+                             # This is a template string, so you can use any of the syntax available to Path Formats.
 
+copyartifacts:
+    extensions: .jpg .pdf .png
+    print_ignored: yes
 
 fetchart:
   auto: yes                  # Enable automatic album art fetching during import.
@@ -439,14 +444,19 @@ convert:                     # By default, the command places converted files in
   #tmpdir: none              # The directory where temporary files will be stored during import. Default: none (system default),
   copy_album_art: no         # Since the covers are embedded in the files when Roon exports them, this configuration is not necessary.
   embed: no                  # Embed album art in converted items. Default: yes.
-
-
+  #id3v23: inherit           # Can be used to override the global id3v23 option. Default: inherit.
+  never_convert_lossy_files: yes
+                             # Cross-conversions between lossy codecs—such as mp3, ogg vorbis, etc.
+                             # Makes little sense as they will decrease quality even further.
+                             # If set to yes, lossy files are always copied.
   quiet: false               # Prevent the plugin from announcing every file it processes.
                              # Default: false.
   threads: 1                 # The number of threads to use for parallel encoding.
                              # By default, the plugin will detect the number of processors available and use them all. 
 
-
+permissions: # octal modes   # Maybe nescessary for smb shares like ROCK or NAS drives.
+  file: 777
+  dir: 777
 
 ###################################################################################################
 
