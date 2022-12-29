@@ -3,7 +3,7 @@ directory: /music
 library: /config/musiclibrary.blb
 art_filename: albumart
 threaded: yes
-original_date: no
+original_date: yes                      # Use orginal release date.
 per_disc_numbering: no
 
 convert:
@@ -12,7 +12,11 @@ convert:
     opts: -ab 320k -ac 2 -ar 48000
     max_bitrate: 320
     threads: 1
-    
+
+###  File and folder structure
+asciify_path: yes            # Convert all non-ASCII characters in paths to ASCII equivalents.
+max_filename_length: 255     # 0 = unlimited.
+
 paths:
     default: $albumartist/$album%aunique{}/$track - $artist - $title
     singleton: Non-Album/$artist - $title
